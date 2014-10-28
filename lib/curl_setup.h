@@ -42,7 +42,9 @@
 
 #else /* HAVE_CONFIG_H */
 
-#ifdef _WIN32_WCE
+#if defined(WINAPI_FAMILY) && ((WINAPI_FAMILY == 1) || (WINAPI_FAMILY == 2))
+#  include "config-winrt.h"
+#elif defined(_WIN32_WCE)
 #  include "config-win32ce.h"
 #else
 #  ifdef WIN32
@@ -257,6 +259,10 @@
 #  ifdef UNICODE
      typedef wchar_t *(*curl_wcsdup_callback)(const wchar_t *str);
 #  endif
+#endif
+
+#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY != WINAPI_FAMILY_DESKTOP_APP)
+#  define WINRT
 #endif
 
 /*
@@ -509,14 +515,11 @@
 #endif
 
 /*
- * MSVC threads support requires a multi-threaded runtime library.
- * _beginthreadex() is not available in single-threaded ones.
+ * Thread support is not implemented on WinRT.
  */
 
-#if defined(_MSC_VER) && !defined(__POCC__) && !defined(_MT)
 #  undef USE_THREADS_POSIX
 #  undef USE_THREADS_WIN32
-#endif
 
 /*
  * Mutually exclusive CURLRES_* definitions.

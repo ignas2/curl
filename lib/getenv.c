@@ -32,6 +32,8 @@ char *GetEnv(const char *variable)
 {
 #ifdef _WIN32_WCE
   return NULL;
+#elif defined(WINRT)
+  return NULL;
 #else
 #ifdef WIN32
   char env[MAX_PATH]; /* MAX_PATH is from windef.h */
